@@ -69,6 +69,7 @@ totalsteps <- with(data, rowsum(steps, date))
 
 #plot the histogram
 hist(totalsteps, breaks=8, col="blue", main="Total Steps Histogram", xlab="Steps")
+rug(totalsteps)
 ```
 
 For the second part, I calculated the mean and median total number of steps taken per day (ignoring missing values).  The mean number of steps is `r round(mean(totalsteps,na.rm=TRUE),2)` and the median number of steps is `r median(totalsteps, na.rm=TRUE)`.
@@ -94,7 +95,22 @@ On average, the interval `r maxnumsteps$interval` was the 5-minute interval whic
 
 ## Imputing missing values
 
-There are many days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.  This data set had `r sum(is.na(data$steps))' days/intervals with missing values.  I copied the original data set to a new data set and added a column "imputed_steps" and filled the missing values with the mean value.
+There are many days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.  
+
+```{r}
+originalValue <- complete.cases(data)  
+nMissing <- length(originalValue[originalValue==FALSE])     # number of records with NA  
+nComplete <- length(originalValue[originalValue==TRUE])     # number of complete records
+
+title="Missing vs. Complete Cases"  
+barplot(table(originalValue),main=title,xaxt='n', col="bisque3")# render Complete Cases barplot  
+axis(side=1,at=c(.7,1.9),labels=c("Missing","Complete"),tick=FALSE)    # render axis  
+text(.7,0,labels=nMissing, pos=3)                                  # label the NA's bar  
+text(1.9,0,labels=nComplete, pos=3)   
+```
+
+This data set had `r sum(is.na(data$steps))' days/intervals with missing values.  I copied the original data set to a new data set and added a column "imputed_steps" and filled the missing values with the mean value.
+
 ```{r}
 impdata <-data
 impdata$imputed_steps<-with(impdata, impute(steps,mean))
@@ -108,13 +124,14 @@ imptotalsteps <- with(impdata, rowsum(imputed_steps, date))
 
 #plot the histogram
 hist(imptotalsteps, breaks=8, col="blue", main="Total Steps Histogram After NA Imputed", xlab="Steps")
+rug(imptotalsteps)
 ```
 
-##Differences
+###Differences
 
 The mean number of steps calculated with the imputed values was `r round(mean(imptotalsteps),2)` and the median number of steps was `r round(median(imptotalsteps),2)`.  The mean and median previously calculated by ignoring the NA values were `r round(mean(totalsteps,na.rm=TRUE),2)` and `r round(median(totalsteps,na.rm=TRUE),2)` respectively.   
 
-##Impact of imputing missing data
+###Impact of imputing missing data
 
 The mean was unchanged by imputing the missing values using the mean value for the 5 minute interval.  The median increased slightly to match the mean. As expected, the frequencies of each bin were higher with the imputed missing data.
 

@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 ## Load libraries and set global defaults.
 
 
@@ -13,17 +8,46 @@ if (!require("knitr"))
         {
                 install.packages("knitr")
         }
+```
 
+```
+## Loading required package: knitr
+```
+
+```r
 if (!require("ggplot2"))
         {
                 install.packages("ggplot2")
         }
+```
 
+```
+## Loading required package: ggplot2
+```
+
+```r
 if (!require("Hmisc"))
         {
                 install.packages("Hmisc")
         }
+```
 
+```
+## Loading required package: Hmisc
+## Loading required package: grid
+## Loading required package: lattice
+## Loading required package: survival
+## Loading required package: splines
+## Loading required package: Formula
+## 
+## Attaching package: 'Hmisc'
+## 
+## The following objects are masked from 'package:base':
+## 
+##     format.pval, round.POSIXt, trunc.POSIXt, units
+```
+
+```r
 # Turn off scientific notations for numbers
 options(scipen = 999)  
 
@@ -78,9 +102,10 @@ totalsteps <- with(data, rowsum(steps, date))
 
 #plot the histogram
 hist(totalsteps, breaks=8, col="blue", main="Total Steps Histogram", xlab="Steps")
+rug(totalsteps)
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
+![](./PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
 
 For the second part, I calculated the mean and median total number of steps taken per day (ignoring missing values).  The mean number of steps is 10766.19 and the median number of steps is 10765.
 
@@ -97,7 +122,7 @@ stepsperint<- aggregate(data$steps,by = list(interval = data$interval), FUN=mean
 with(stepsperint, plot(interval, x, type="l", col="red"))
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+![](./PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
 
 Next, I computed the 5-minute interval with the containing the maximum number of steps.
 
@@ -109,7 +134,25 @@ On average, the interval 835 was the 5-minute interval which contained the maxim
 
 ## Imputing missing values
 
-There are many days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.  This data set had `r sum(is.na(data$steps))' days/intervals with missing values.  I copied the original data set to a new data set and added a column "imputed_steps" and filled the missing values with the mean value.
+There are many days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.  
+
+
+```r
+originalValue <- complete.cases(data)  
+nMissing <- length(originalValue[originalValue==FALSE])     # number of records with NA  
+nComplete <- length(originalValue[originalValue==TRUE])     # number of complete records
+
+title="Missing vs. Complete Cases"  
+barplot(table(originalValue),main=title,xaxt='n', col="bisque3")# render Complete Cases barplot  
+axis(side=1,at=c(.7,1.9),labels=c("Missing","Complete"),tick=FALSE)    # render axis  
+text(.7,0,labels=nMissing, pos=3)                                  # label the NA's bar  
+text(1.9,0,labels=nComplete, pos=3)   
+```
+
+![](./PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+
+This data set had `r sum(is.na(data$steps))' days/intervals with missing values.  I copied the original data set to a new data set and added a column "imputed_steps" and filled the missing values with the mean value.
+
 
 ```r
 impdata <-data
@@ -125,9 +168,10 @@ imptotalsteps <- with(impdata, rowsum(imputed_steps, date))
 
 #plot the histogram
 hist(imptotalsteps, breaks=8, col="blue", main="Total Steps Histogram After NA Imputed", xlab="Steps")
+rug(imptotalsteps)
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
+![](./PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
 ##Differences
 
@@ -150,6 +194,6 @@ stepsperint<- aggregate(impdata$imputed_steps, by = list(interval=impdata$interv
 ggplot(stepsperint, aes(x = interval, y = x)) + geom_line() + facet_wrap(~week, ncol=1)
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
+![](./PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
 
 The graph above that activity on the weekday has the greatest peak from all steps intervals. The weekends activities has more peaks over a hundred than the weekday activities. 
