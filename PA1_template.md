@@ -3,66 +3,11 @@
 
 
 ```r
-##Load any required libraries and set any global defaults
-if (!require("knitr"))
-        {
-                install.packages("knitr")
-        }
-```
-
-```
-## Loading required package: knitr
-```
-
-```r
-if (!require("ggplot2"))
-        {
-                install.packages("ggplot2")
-        }
-```
-
-```
-## Loading required package: ggplot2
-```
-
-```r
-if (!require("Hmisc"))
-        {
-                install.packages("Hmisc")
-        }
-```
-
-```
-## Loading required package: Hmisc
-## Loading required package: grid
-## Loading required package: lattice
-## Loading required package: survival
-## Loading required package: splines
-## Loading required package: Formula
-## 
-## Attaching package: 'Hmisc'
-## 
-## The following objects are masked from 'package:base':
-## 
-##     format.pval, round.POSIXt, trunc.POSIXt, units
-```
-
-```r
-# Turn off scientific notations for numbers
-options(scipen = 999)  
-
-#Set globals
-opts_chunk$set(fig.width=7, fig.height=7, warnings=FALSE)  
-Sys.setlocale("LC_ALL", "English") 
-```
-
-```
-## [1] "LC_COLLATE=English_United States.1252;LC_CTYPE=English_United States.1252;LC_MONETARY=English_United States.1252;LC_NUMERIC=C;LC_TIME=English_United States.1252"
-```
-
-```r
-#Set working directory to data directory
-setwd('C:/Users/bryan_000/Documents/GitHub/Data/')
+##Use my standard openning including call function
+source('C:/Users/bryan_000/Documents/GitHub/MyWork/StdOpen.R')
+call("knitr")
+call("ggplot2")
+call("Hmisc")
 ```
 
 ## Loading and preprocessing the data
@@ -76,7 +21,10 @@ The variables included in this data set are:
         interval: Identifier for the 5-minute interval in which measurement was taken
 
 ```r
-if (!file.exists("activity.csv"))
+##Set destination file for dowload 
+datafile <-paste(datadir,"activity.csv",sep = "")
+
+if (!file.exists(datafile))
  {
         data.url <- 'http://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip'
         zip.file <- 'activity.zip'
@@ -85,7 +33,7 @@ if (!file.exists("activity.csv"))
  }
 
 ##Read the data
-data <- read.table("activity.csv", header = TRUE, sep =",")
+data <- read.table(datafile, header = TRUE, sep =",")
 ```
 
 The data set is stored in a comma-separated-value (CSV) file.
@@ -173,11 +121,11 @@ rug(imptotalsteps)
 
 ![](./PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
-##Differences
+###Differences
 
 The mean number of steps calculated with the imputed values was 10766.19 and the median number of steps was 10766.19.  The mean and median previously calculated by ignoring the NA values were 10766.19 and 10765 respectively.   
 
-##Impact of imputing missing data
+###Impact of imputing missing data
 
 The mean was unchanged by imputing the missing values using the mean value for the 5 minute interval.  The median increased slightly to match the mean. As expected, the frequencies of each bin were higher with the imputed missing data.
 

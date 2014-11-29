@@ -6,32 +6,12 @@ output:
 ---
 ## Load libraries and set global defaults.
 
-```{r,warning=FALSE}
-##Load any required libraries and set any global defaults
-if (!require("knitr"))
-        {
-                install.packages("knitr")
-        }
-
-if (!require("ggplot2"))
-        {
-                install.packages("ggplot2")
-        }
-
-if (!require("Hmisc"))
-        {
-                install.packages("Hmisc")
-        }
-
-# Turn off scientific notations for numbers
-options(scipen = 999)  
-
-#Set globals
-opts_chunk$set(fig.width=7, fig.height=7, warnings=FALSE)  
-Sys.setlocale("LC_ALL", "English") 
-
-#Set working directory to data directory
-setwd('C:/Users/bryan_000/Documents/GitHub/Data/')
+```{r,warning=FALSE, message=FALSE}
+##Use my standard openning including call function
+source('C:/Users/bryan_000/Documents/GitHub/MyWork/StdOpen.R')
+call("knitr")
+call("ggplot2")
+call("Hmisc")
 ```
 
 ## Loading and preprocessing the data
@@ -44,16 +24,20 @@ The variables included in this data set are:
 
         interval: Identifier for the 5-minute interval in which measurement was taken
 ```{r}
-if (!file.exists("activity.csv"))
- {
+##Set destination file for dowload 
+datafile <-paste(datadir,"activity.csv",sep = "")
+zip.file <-paste(datadir,"activity.zip",sep = "")
+
+if (!file.exists(datafile))
+        {
         data.url <- 'http://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip'
-        zip.file <- 'activity.zip'
-        download.file(data.url, zip.file) 
+       download.file(data.url, zip.file)
+       downloadedDataDate <- date()
         unzip(zip.file)
- }
+        }
 
 ##Read the data
-data <- read.table("activity.csv", header = TRUE, sep =",")
+data <- read.table(datafile, header = TRUE, sep =",")
 ```
 
 The data set is stored in a comma-separated-value (CSV) file.
